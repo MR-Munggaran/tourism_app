@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum NavigationRoute {
-  homeRoute("/"),
+  mainRoute("/"),
   detailRoute("/detail");
 
   const NavigationRoute(this.name);

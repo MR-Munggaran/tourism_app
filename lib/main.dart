@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectpractice01/model/tourism.dart';
 import 'package:projectpractice01/screen/detail/detail_screen.dart';
-import 'package:projectpractice01/screen/home/home_screen.dart';
+import 'package:projectpractice01/screen/main/main_screen.dart';
 import 'package:projectpractice01/static/navigation_route.dart';
 import 'package:projectpractice01/style/theme/tourism_theme.dart';
 
@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
         theme: TourismTheme.lightTheme,
         darkTheme: TourismTheme.darkTheme,
         themeMode: ThemeMode.system,
-        initialRoute: NavigationRoute.homeRoute.name,
+        initialRoute: NavigationRoute.mainRoute.name,
         routes: {
-          NavigationRoute.homeRoute.name: (context) => const HomeScreen(),
+          NavigationRoute.mainRoute.name: (context) => const MainScreen(),
           NavigationRoute.detailRoute.name: (context) => DetailScreen(
                 tourism: ModalRoute.of(context)?.settings.arguments as Tourism,
               ),
