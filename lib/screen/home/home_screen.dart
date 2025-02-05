@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:projectpractice01/model/tourism.dart';
+import 'package:projectpractice01/data/api/api_service.dart';
+import 'package:projectpractice01/data/model/tourism_list_response.dart';
+import 'package:projectpractice01/provider/home/tourism_list_provider.dart';
 import 'package:projectpractice01/screen/home/tourism_card_widget.dart';
 import 'package:projectpractice01/static/navigation_route.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../static/tourism_list_result_state.dart';
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      context.read<TourismListProvider>().fetchTourismList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,18 +32,34 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Tourism List"),
       ),
-      body: ListView.builder(
-        itemCount: tourismList.length,
-        itemBuilder: (context, index) {
-          final tourism = tourismList[index];
+      body: Consumer<TourismListProvider>(
+        builder: (context, value, child) {
+          return switch (value.resultState) {
+            TourismListLoadingState() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            TourismListLoadedState(data: var tourismList) => ListView.builder(
+              itemCount: tourismList.length,
+              itemBuilder: (context, index) {
+                final tourism = tourismList[index];
 
-          return TourismCard(
-            tourism: tourism,
-            onTap: () => {
-              Navigator.pushNamed(context, NavigationRoute.detailRoute.name,
-                  arguments: tourism)
-            },
-          );
+                return TourismCard(
+                  tourism: tourism,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.detailRoute.name,
+                      arguments: tourism.id,
+                    );
+                  },
+                );
+              },
+            ),
+            TourismListErrorState(error: var message) => Center(
+              child: Text(message),
+            ),
+            _ => const SizedBox(),
+          };
         },
       ),
     );
